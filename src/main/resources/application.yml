@@ -1,6 +1,16 @@
 spring:
   application:
     name: dispatcher-service
+  cloud:
+    function:
+      definition: pack|label
+    stream:
+      bindings:
+        packlabel-in-0:
+          destination: order-accepted
+          group: ${spring.application.name}
+        packlabel-out-0:
+          destination: order-dispatched
   rabbitmq:
     host: localhost
     port: 5672

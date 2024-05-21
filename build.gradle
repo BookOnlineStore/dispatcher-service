@@ -23,6 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.cloud:spring-cloud-stream-binder-rabbit'
+    implementation 'org.springframework.cloud:spring-cloud-function-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation("org.springframework.cloud:spring-cloud-stream") {
         artifact {
@@ -32,6 +33,7 @@ dependencies {
             classifier = "test-binder"
         }
     }
+    testImplementation 'io.projectreactor:reactor-test'
 }
 
 dependencyManagement {

@@ -1,6 +1,7 @@
 server:
   port: 9003
 
+# Spring
 spring:
   application:
     name: dispatcher-service
@@ -21,6 +22,11 @@ spring:
     password: password
     connection-timeout: 5s
 
+# Logging
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+
 # Info system
 info:
   system: Bookstore system
@@ -30,7 +36,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, info
+        include: info, health, env, flyway, loggers, mappings, prometheus
   endpoint:
     health:
       show-details: always
@@ -44,3 +50,6 @@ management:
       enabled: true
     os:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}

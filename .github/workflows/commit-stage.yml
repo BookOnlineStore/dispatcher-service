@@ -3,7 +3,7 @@ on: push
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: bookonlinestore/dispatcher-service
+  IMAGE_NAME: thainguyencoffee-bookstore/dispatcher-service
   VERSION: latest
 
 jobs:

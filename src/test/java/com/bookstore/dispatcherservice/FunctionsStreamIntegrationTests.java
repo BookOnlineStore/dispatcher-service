@@ -13,6 +13,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,9 +32,10 @@ class FunctionsStreamIntegrationTests {
 
     @Test
     void whenOrderAcceptedThenDispatched() throws IOException {
-        long orderId = 121;
+        var orderId = UUID.randomUUID();
+        var orderAcceptedMessage = new OrderAcceptedMessage(orderId, null, null);
         Message<OrderAcceptedMessage> inputMessage = MessageBuilder
-                .withPayload(new OrderAcceptedMessage(orderId)).build();
+                .withPayload(orderAcceptedMessage).build();
         Message<OrderDispatchedMessage> expectedOutputMessage = MessageBuilder
                 .withPayload(new OrderDispatchedMessage(orderId)).build();
 

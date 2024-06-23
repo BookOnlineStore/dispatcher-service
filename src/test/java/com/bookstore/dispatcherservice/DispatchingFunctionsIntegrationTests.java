@@ -8,6 +8,7 @@ import org.springframework.cloud.function.context.test.FunctionalSpringBootTest;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,19 +24,21 @@ public class DispatchingFunctionsIntegrationTests {
     void packOrder() {
         Function<OrderAcceptedMessage, Long> pack =
                 catalog.lookup(Function.class, "pack");
-        long orderId = 121;
-        assertThat(pack.apply(new OrderAcceptedMessage(orderId))).isEqualTo(orderId);
+        var orderId = UUID.randomUUID();
+        var orderAcceptedMessage = new OrderAcceptedMessage(orderId, null, null);
+        assertThat(pack.apply(orderAcceptedMessage)).isEqualTo(orderId);
     }
 
     @Test
     void labelOrder() {
-        Function<Flux<Long>, Flux<OrderDispatchedMessage>> label =
+        Function<Flux<UUID>, Flux<OrderDispatchedMessage>> label =
                 catalog.lookup(Function.class, "label");
 
-        Flux<Long> orderId = Flux.just(111L);
-        StepVerifier.create(label.apply(orderId))
+        var orderId = UUID.randomUUID();
+        Flux<UUID> orderIdFlux = Flux.just();
+        StepVerifier.create(label.apply(orderIdFlux))
                 .expectNextMatches(orderDispatchedMessage ->
-                        orderDispatchedMessage.equals(new OrderDispatchedMessage(111L)))
+                        orderDispatchedMessage.equals(new OrderDispatchedMessage(orderId)))
                 .verifyComplete();
     }
 
@@ -43,9 +46,10 @@ public class DispatchingFunctionsIntegrationTests {
     void packAndLabelOrder() {
         Function<OrderAcceptedMessage, Flux<OrderDispatchedMessage>> packAndLabel =
                 catalog.lookup(Function.class, "pack|label");
-        long orderId = 121;
 
-        StepVerifier.create(packAndLabel.apply(new OrderAcceptedMessage(orderId)))
+        var orderId = UUID.randomUUID();
+        var orderAcceptedMessage = new OrderAcceptedMessage(orderId, null, null);
+        StepVerifier.create(packAndLabel.apply(orderAcceptedMessage))
                 .expectNextMatches(dispatchedOrder ->
                         dispatchedOrder.equals(new OrderDispatchedMessage(orderId)))
                 .verifyComplete();
